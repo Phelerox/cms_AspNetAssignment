@@ -12,5 +12,9 @@ namespace cms.Data
             : base(options)
         {
         }
+
+        public DbSet<cms.Models.Person> Persons { get; set; }
+        public DbSet<cms.Models.Country> Countries { get; set; }
+        public DbSet<cms.Models.City> Cities { get; set; }
     }
 }
