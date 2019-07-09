@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using cms.Data;
 using cms.Models;
+using cms.Authorization;
+using Microsoft.AspNetCore.Authorization;
 
 namespace cms.Controllers
 {
@@ -16,44 +18,63 @@ namespace cms.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-
-        public PersonsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly IAuthorizationService _authorizationService;
+        public PersonsController(ApplicationDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, IAuthorizationService authorizationService)
         {
             _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
+            _authorizationService = authorizationService;
         }
 
         // GET: Persons
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Persons.Include(p => p.City);
-            return View(await applicationDbContext.ToListAsync());
+            ViewBag.LinkText = "Persons";
+            var applicationDbContext = _context.Persons.Where(p => p.Status > PersonStatus.Hidden || (p.CreatorId == _userManager.GetUserId(User) || User.IsInRole("Administrator"))).Include(p => p.City);
+            var persons = await applicationDbContext.ToListAsync();
+            // var tasks = persons.Select(async person => new { person, filter = await _authorizationService.AuthorizeAsync(
+            //          User, person,
+            //          PersonOperations.Read) });
+            // var results = await Task.WhenAll(tasks);
+            // persons = (List<Person>) results.Where(p => p.filter.Succeeded).Select(p => p.person);
+            return View(persons);
         }
 
         // GET: Persons/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.LinkText = "Persons";
             if (id == null)
             {
                 return NotFound();
             }
-
             var person = await _context.Persons
                 .Include(p => p.City)
                 .FirstOrDefaultAsync(m => m.PersonId == id);
-            if (person == null)
+            if (person == null || (person.Status <= PersonStatus.Hidden && !(person.CreatorId == _userManager.GetUserId(User) || User.IsInRole("Administrator"))))
             {
                 return NotFound();
             }
-
+            ViewData["Creator"] = (await _userManager.FindByIdAsync(person.CreatorId)).UserName;
             return View(person);
         }
 
         // GET: Persons/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.LinkText = "PersonsEdit";
+            var person = new Person() {
+                CreatorId = _userManager.GetUserId(User)
+            };
+             if (!(await _authorizationService.AuthorizeAsync(
+                     User, person,
+                     PersonOperations.Create)).Succeeded)
+            {
+                return NotFound();
+            }
             ViewData["CityId"] = new SelectList(_context.Cities, "CityId", "CityName");
+            // ViewData["Status"] = new SelectList(Enum.GetValues(typeof(PersonStatus)), "Status", "Status");
             return View();
         }
 
@@ -64,7 +85,14 @@ namespace cms.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("PersonId,Name,Description,CityId,Phone,Portrait,Email,Status")] Person person)
         {
+            ViewBag.LinkText = "PersonsEdit";
             person.CreatorId = _userManager.GetUserId(User);
+             if(!(await _authorizationService.AuthorizeAsync(
+                     User, person,
+                     PersonOperations.Create)).Succeeded)
+            {
+                return NotFound();
+            }
             if (ModelState.IsValid)
             {
                 _context.Add(person);
@@ -78,13 +106,18 @@ namespace cms.Controllers
         // GET: Persons/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            ViewBag.LinkText = "PersonsEdit";
             if (id == null)
             {
-                return NotFound();
+                var applicationDbContext = _context.Persons.Where((p) => (p.CreatorId == _userManager.GetUserId(User) || User.IsInRole("Administrator"))).Include(p => p.City);
+                var persons = await applicationDbContext.ToListAsync();
+                return View("EditIndex", persons);
             }
 
             var person = await _context.Persons.FindAsync(id);
-            if (person == null)
+            if (person == null || !(await _authorizationService.AuthorizeAsync(
+                     User, person,
+                     PersonOperations.Update)).Succeeded)
             {
                 return NotFound();
             }
@@ -99,7 +132,10 @@ namespace cms.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("PersonId,Name,Description,CityId,Phone,Portrait,Email,Status")] Person person)
         {
-            if (id != person.PersonId)
+            ViewBag.LinkText = "PersonsEdit";
+            if (id != person.PersonId || !(await _authorizationService.AuthorizeAsync(
+                     User, person,
+                     PersonOperations.Update)).Succeeded)
             {
                 return NotFound();
             }
@@ -131,6 +167,7 @@ namespace cms.Controllers
         // GET: Persons/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
+            ViewBag.LinkText = "PersonsEdit";
             if (id == null)
             {
                 return NotFound();
@@ -139,11 +176,12 @@ namespace cms.Controllers
             var person = await _context.Persons
                 .Include(p => p.City)
                 .FirstOrDefaultAsync(m => m.PersonId == id);
-            if (person == null)
+            if (person == null || !(await _authorizationService.AuthorizeAsync(
+                     User, person,
+                     PersonOperations.Delete)).Succeeded)
             {
                 return NotFound();
             }
-
             return View(person);
         }
 
@@ -152,7 +190,14 @@ namespace cms.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            ViewBag.LinkText = "PersonsEdit";
             var person = await _context.Persons.FindAsync(id);
+            if(!(await _authorizationService.AuthorizeAsync(
+                     User, person,
+                     PersonOperations.Delete)).Succeeded)
+            {
+                return NotFound();
+            }
             _context.Persons.Remove(person);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

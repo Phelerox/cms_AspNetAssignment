@@ -16,7 +16,7 @@ namespace cms.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Persons", new { area = "" });
         }
 
         public IActionResult Privacy()

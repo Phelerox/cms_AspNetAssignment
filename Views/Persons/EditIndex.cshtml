@@ -1,7 +1,7 @@
 @model IEnumerable<cms.Models.Person>
 
 @{
-    ViewData["Title"] = "Person Database";
+    ViewData["Title"] = "Index";
 }
 
 <h1>Index</h1>
@@ -14,9 +14,6 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
@@ -25,20 +22,18 @@
             <th>
                 @Html.DisplayNameFor(model => model.Phone)
             </th>
-            <!-- <th>
-                @Html.DisplayNameFor(model => model.Portrait)
-            </th> -->
             <th>
-                Actions
+                @Html.DisplayNameFor(model => model.Portrait)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
 @foreach (var item in Model) {
         <tr class="@(item.Status >= PersonStatus.VIP ? "emphasize" : "")">
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -48,9 +43,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Phone)
             </td>
-            <!-- <td>
+            <td>
                 @Html.DisplayFor(modelItem => item.Portrait)
-            </td> -->
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
             <td>
                 <div class="d-inline-block">
                     @if ((await AuthorizationService.AuthorizeAsync(

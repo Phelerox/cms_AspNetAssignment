@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace cms.Authorization
 {
-	public static class ContactOperations
+	public static class PersonOperations
 	{
 		public static OperationAuthorizationRequirement Create =
 		  new OperationAuthorizationRequirement {Name=Constants.CreateOperationName};
@@ -12,12 +12,8 @@ namespace cms.Authorization
 		  new OperationAuthorizationRequirement {Name=Constants.UpdateOperationName};
 		public static OperationAuthorizationRequirement Delete =
 		  new OperationAuthorizationRequirement {Name=Constants.DeleteOperationName};
-		public static OperationAuthorizationRequirement Promote =
-		  new OperationAuthorizationRequirement {Name=Constants.PromoteOperationName};
-        public static OperationAuthorizationRequirement Demote =
-		  new OperationAuthorizationRequirement {Name=Constants.DemoteOperationName};
-		public static OperationAuthorizationRequirement Censor =
-		  new OperationAuthorizationRequirement {Name=Constants.CensorOperationName};
+		public static OperationAuthorizationRequirement Status =
+		  new OperationAuthorizationRequirement {Name=Constants.StatusOperationName};
 	}
 
 	public class Constants
@@ -26,10 +22,8 @@ namespace cms.Authorization
 		public static readonly string ReadOperationName = "Read";
 		public static readonly string UpdateOperationName = "Update";
 		public static readonly string DeleteOperationName = "Delete";
-		public static readonly string PromoteOperationName = "Promote";
-        public static readonly string DemoteOperationName = "Demote";
-		public static readonly string CensorOperationName = "Censor";
+		public static readonly string StatusOperationName = "Status";
 
-		public static readonly string AdministratorsRole = "ContactAdministrators";
+		public static readonly string AdministratorsRole = "PersonAdministrators";
 	}
 }

@@ -34,8 +34,8 @@ namespace cms.Models
 
   public enum PersonStatus
   {
-    VIP,
+    Hidden,
     Visible,
-    Hidden
+    VIP
   }
 }
