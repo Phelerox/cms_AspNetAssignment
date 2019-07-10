@@ -24,6 +24,6 @@ namespace cms.Authorization
 		public static readonly string DeleteOperationName = "Delete";
 		public static readonly string StatusOperationName = "Status";
 
-		public static readonly string AdministratorsRole = "PersonAdministrators";
+		public static readonly string AdministratorsRole = "Administrator";
 	}
 }

@@ -22,10 +22,9 @@ namespace cms.Data
                 // dotnet user-secrets set SeedUserPW <pw>
                 // The admin user can do anything
 
-                var adminID = await EnsureUser(serviceProvider, testUserPw, "baxemyr@gmail.com");
+                var adminID = await EnsureUser(serviceProvider, testUserPw, "admin@admin.com");
                 await EnsureRole(serviceProvider, adminID, Constants.AdministratorsRole);
 
-                SeedDB(context, adminID);
             }
         }
 
@@ -74,57 +73,5 @@ namespace cms.Data
             return IR;
         }
         #endregion
-        #region snippet1
-        public static void SeedDB(ApplicationDbContext context, string adminID)
-        {
-            if (context.Persons.Any())
-            {
-                return;   // DB has been seeded
-            }
-
-            context.Persons.AddRange(
-            #region snippet_Person
-                new Person
-                {
-                    Name = "Debra Garcia",
-                    // City = ,
-                    Email = "debra@example.com",
-                    Status = PersonStatus.Visible,
-                    CreatorId = adminID
-                },
-            #endregion
-            #endregion
-                new Person
-                {
-                    Name = "Thorsten Weinrich",
-                    // City = "Redmond",
-                    Email = "thorsten@example.com",
-                    Status = PersonStatus.VIP,
-                    CreatorId = adminID
-                },
-             new Person
-             {
-                 Name = "Yuhong Li",
-                //  City = "Redmond",
-                 Email = "yuhong@example.com",
-                 Status = PersonStatus.Hidden,
-                 CreatorId = adminID
-             },
-             new Person
-             {
-                 Name = "Jon Orton",
-                 Email = "jon@example.com",
-                 Status = PersonStatus.Visible,
-                 CreatorId = adminID
-             },
-             new Person
-             {
-                 Name = "Diliana Alexieva-Bosseva",
-                 Email = "diliana@example.com",
-                 CreatorId = adminID
-             }
-             );
-            context.SaveChanges();
-        }
     }
 }

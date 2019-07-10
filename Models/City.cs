@@ -13,6 +13,12 @@ namespace cms.Models
 
         [Required]
         public int CountryId { get; set; }
+
+        [Required]
         public virtual Country Country {get; set;}
+
+        public override string ToString() {
+            return $"{CityName}, {Country.CountryName}";
+        }
     }
 }

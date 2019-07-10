@@ -1,3 +1,9 @@
 .vscode/
 obj/
 bin/
+Areas/Identity/IdentityHostingStartup.cs
+Areas/Identity/Pages/Account/
+Areas/Identity/Pages/_ValidationScriptsPartial.cshtml
+Areas/Identity/Pages/_ViewImports.cshtml
+ScaffoldingReadme.txt
+cms.db

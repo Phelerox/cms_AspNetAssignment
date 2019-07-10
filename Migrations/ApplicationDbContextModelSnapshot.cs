@@ -2,17 +2,15 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using cms.Data;
 
-namespace cms.Data.Migrations
+namespace cms.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190708081535_initial")]
-    partial class initial
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -295,6 +293,7 @@ namespace cms.Data.Migrations
                     b.HasOne("cms.Models.Country", "Country")
                         .WithMany("Cities")
                         .HasForeignKey("CountryId")
+                        .HasConstraintName("ForeignKey_City_Country")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

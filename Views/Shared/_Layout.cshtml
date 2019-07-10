@@ -67,6 +67,9 @@
                         @if (User.IsInRole("Administrator"))
                         {
                             <li class="nav-item">
+                                <a class="@((ViewBag.Linktext == "UserAccounts" ? "active" : "") + " nav-link")" asp-area="" asp-controller="UserAccounts" asp-action="Index">User Accounts</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="@((ViewBag.Linktext == "Cities" ? "active" : "") + " nav-link")" asp-area="" asp-controller="Cities" asp-action="Index">Cities</a>
                             </li>
                             <li class="nav-item">

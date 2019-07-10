@@ -11,10 +11,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+// using Microsoft.EntityFrameworkCore.Proxies;
 
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Authorization;
-
 using cms.Data;
 using cms.Authorization;
 
@@ -37,8 +37,8 @@ namespace cms
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
             });
-
             services.AddDbContext<ApplicationDbContext>(options =>
+                // options.UseLazyLoadingProxies()
                 options.UseSqlite(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<IdentityUser>()

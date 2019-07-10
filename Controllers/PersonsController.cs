@@ -73,8 +73,7 @@ namespace cms.Controllers
             {
                 return NotFound();
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "CityId", "CityName");
-            // ViewData["Status"] = new SelectList(Enum.GetValues(typeof(PersonStatus)), "Status", "Status");
+            ViewData["CityId"] = new SelectList(_context.Cities.Include(c => c.Country), "CityId", null); //null makes it use ToString() https://stackoverflow.com/questions/25873494/how-make-selectlist-use-tostring-method-for-displaying-elements-and-set-datava
             return View();
         }
 
@@ -99,7 +98,7 @@ namespace cms.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "CityId", "CityName", person.CityId);
+            ViewData["CityId"] = new SelectList(_context.Cities.Include(c => c.Country), "CityId", null);
             return View(person);
         }
 
@@ -121,7 +120,7 @@ namespace cms.Controllers
             {
                 return NotFound();
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "CityId", "CityName", person.CityId);
+            ViewData["CityId"] = new SelectList(_context.Cities.Include(c => c.Country), "CityId", null, person.CityId);
             return View(person);
         }
 
@@ -160,7 +159,7 @@ namespace cms.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CityId"] = new SelectList(_context.Cities, "CityId", "CityName", person.CityId);
+            ViewData["CityId"] = new SelectList(_context.Cities.Include(c => c.Country), "CityId", null, person.CityId);
             return View(person);
         }
 

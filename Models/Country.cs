@@ -11,6 +11,6 @@ namespace cms.Models
         [Required]
         public string CountryName { get; set; }
 
-        public List<City> Cities { get; set; }
+        public virtual List<City> Cities { get; set; }
     }
 }

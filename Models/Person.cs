@@ -19,7 +19,7 @@ namespace cms.Models
 
     [Required]
     public int CityId { get; set; }
-    public City City { get; set; }
+    public virtual City City { get; set; }
 
     [DataType(DataType.PhoneNumber)]
     public string Phone { get; set; }
