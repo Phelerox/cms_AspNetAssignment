@@ -31,7 +31,8 @@ namespace cms.Controllers
         public async Task<IActionResult> Index()
         {
             ViewBag.LinkText = "Persons";
-            var applicationDbContext = _context.Persons.Where(p => p.Status > PersonStatus.Hidden || (p.CreatorId == _userManager.GetUserId(User) || User.IsInRole("Administrator"))).Include(p => p.City);
+            var applicationDbContext = _context.Persons.Include(p => p.City)
+            .ThenInclude(c => c.Country).Where(p => p.Status > PersonStatus.Hidden || (p.CreatorId == _userManager.GetUserId(User) || User.IsInRole("Administrator"))).Include(p => p.City);
             var persons = await applicationDbContext.ToListAsync();
             // var tasks = persons.Select(async person => new { person, filter = await _authorizationService.AuthorizeAsync(
             //          User, person,
